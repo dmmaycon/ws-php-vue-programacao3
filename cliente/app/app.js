@@ -22,11 +22,11 @@ const app = Vue.createApp({
                 </ul>
                 <div class="bottom_wrapper clearfix">
                     <div class="message_input_wrapper">
-                        <input class="message_input" placeholder="Escreva sua mensagem aqui..." />
+                        <input v-model="text" class="message_input" placeholder="Escreva sua mensagem aqui..." />
                     </div>
                     <div class="send_message">
                         <div class="icon"></div>
-                        <div class="text">Enviar</div>
+                        <div v-on:click="send" class="text">Enviar</div>
                     </div>
                 </div>
             </div>
@@ -40,23 +40,26 @@ const app = Vue.createApp({
             </div>`,
     data() {
         return {
-            mensagens: [
-                {'class':'right', 'text': 'Oi tudo bem?'},
-                {'class':'left', 'text': 'Tudo sim e você ?'},
-                {'class':'right', 'text': 'Oi tudo bem?'},
-                {'class':'left', 'text': 'Tudo sim e você ?'},
-                {'class':'right', 'text': 'Oi tudo bem?'},
-                {'class':'left', 'text': 'Tudo sim e você ?'},
-                {'class':'right', 'text': 'Oi tudo bem?'},
-                {'class':'left', 'text': 'Tudo sim e você ?'},
-            ]
+            mensagens: [],
+            connection: null,
+            text: null
         }
     },
-    mounted() {
-        
+    created() {
+        this.connection = new WebSocket('ws://localhost:7777');
+        this.listen()
     },
     methods: {
-        
+        send() {
+            this.connection.send(this.text)
+            this.mensagens.push({'class':'right', 'text': this.text})
+            this.text = ''
+        },
+        listen() {
+            this.connection.addEventListener('message', message => {
+                this.mensagens.push({'class':'left', 'text': message.data})
+            });
+        }
     }
 })
 app.mount('#app')

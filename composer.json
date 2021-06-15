@@ -1,7 +1,5 @@
 {
     "require": {
-       "guzzlehttp/guzzle": "^7.0",
-        "react/react": "^1.1",
         "cboden/ratchet": "^0.4.3",
         "php-ds/php-ds": "^1.3"
     }
